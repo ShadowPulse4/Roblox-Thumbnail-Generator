@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/*
+  Nugget Studio design tokens.
+  Charcoal base, one violet accent, thin borders. Change the accent here and
+  the whole app follows.
+*/
+:root {
+  --bg: #15161a;
+  --bg-raised: #1a1b20;
+  --panel: #1d1f25;
+  --panel-2: #23252c;
+  --line: #2b2e37;
+  --line-strong: #3a3e4a;
+  --fg: #f3f3f5;
+  --muted: #a0a4b0;
+  --subtle: #6f7482;
+  --accent: #7c5cff;
+  --accent-hover: #6c4cf2;
+  --accent-fg: #ffffff;
+  --accent-soft: rgb(124 92 255 / 0.14);
+  --accent-line: rgb(124 92 255 / 0.45);
+  --success: #3ccf91;
+  --warning: #f2b544;
+  --danger: #ff6b6b;
+  --danger-soft: rgb(255 107 107 / 0.12);
+  --warning-soft: rgb(242 181 68 / 0.12);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-raised: var(--bg-raised);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Geist Variable", ui-sans-serif, sans-serif;
+
+  --radius-panel: 14px;
+  --radius-control: 10px;
+  --radius-chip: 7px;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 12% -10%, rgb(124 92 255 / 0.09), transparent 60%),
+    radial-gradient(900px 500px at 110% 110%, rgb(64 120 255 / 0.05), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.015em;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Viewfinder corner marks around the preview area. */
+.viewfinder {
+  --corner: 18px;
+  --stroke: 2px;
+  background:
+    linear-gradient(var(--line-strong), var(--line-strong)) top left / var(--corner) var(--stroke),
+    linear-gradient(var(--line-strong), var(--line-strong)) top left / var(--stroke) var(--corner),
+    linear-gradient(var(--line-strong), var(--line-strong)) top right / var(--corner) var(--stroke),
+    linear-gradient(var(--line-strong), var(--line-strong)) top right / var(--stroke) var(--corner),
+    linear-gradient(var(--line-strong), var(--line-strong)) bottom left / var(--corner) var(--stroke),
+    linear-gradient(var(--line-strong), var(--line-strong)) bottom left / var(--stroke) var(--corner),
+    linear-gradient(var(--line-strong), var(--line-strong)) bottom right / var(--corner) var(--stroke),
+    linear-gradient(var(--line-strong), var(--line-strong)) bottom right / var(--stroke) var(--corner);
+  background-repeat: no-repeat;
+}
+
+/* Subtle stud grid, a nod to Roblox bricks, used only inside empty canvases. */
+.stud-grid {
+  background-image: radial-gradient(rgb(255 255 255 / 0.05) 1.2px, transparent 1.6px);
+  background-size: 22px 22px;
+}
+
+@keyframes scan {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.scan-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(124 92 255 / 0.18), transparent);
+  animation: scan 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .scan-bar::after {
+    animation: none;
+    opacity: 0.6;
+  }
+}
