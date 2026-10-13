@@ -12,6 +12,7 @@ export const VISUAL_STYLES = [
   "anime",
   "realistic-3d",
   "minimal-icon",
+  "steal-chase",
   "custom",
 ] as const;
 export type VisualStyle = (typeof VISUAL_STYLES)[number];
@@ -40,8 +41,18 @@ export const OVERLAY_POSITIONS = [
 ] as const;
 export type OverlayPosition = (typeof OVERLAY_POSITIONS)[number];
 
+/** title = 3D gold title like "EPIC BOSSES"; outline = solid letters with a thick rim like "YOU"; label = text on a dark box like "+1,000,000 STRENGTH". */
+export const OVERLAY_STYLES = ["title", "outline", "label"] as const;
+export type OverlayStyle = (typeof OVERLAY_STYLES)[number];
+
+export const OVERLAY_ARROWS = ["none", "down-left", "down-right"] as const;
+export type OverlayArrow = (typeof OVERLAY_ARROWS)[number];
+
 export interface TextOverlay {
+  /** Up to three lines, separated by newlines. */
   text: string;
+  /** Older saved overlays have no style; they render as "outline". */
+  style?: OverlayStyle;
   font: OverlayFont;
   /** Font size as a percentage of the image height (4–30). */
   sizePercent: number;
@@ -52,6 +63,10 @@ export interface TextOverlay {
   outlinePercent: number;
   /** Rotation in degrees (-15 to 15), thumbnails often tilt text slightly. */
   rotation: number;
+  /** Bottom color of the gradient for the "title" style. */
+  fillColor2?: string;
+  /** Red callout arrow under the text, pointing at the subject. */
+  arrow?: OverlayArrow;
 }
 
 export interface GeneratedImageDTO {

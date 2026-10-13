@@ -3,7 +3,7 @@ import { Generator, type GeneratorInitial } from "@/components/generator/generat
 import { PageHeader } from "@/components/ui/misc";
 import { HeaderStatus } from "@/components/layout/header-status";
 import { STYLE_PRESETS } from "@/lib/ai/styles";
-import { DEFAULT_OVERLAY } from "@/lib/overlay/layout";
+import { DEFAULT_OVERLAY, OVERLAY_PRESETS } from "@/lib/overlay/layout";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getGenerationForUser } from "@/lib/database/repo";
 
@@ -25,7 +25,10 @@ export default async function GeneratePage({ searchParams }: PageProps<"/">) {
       style: preset.style,
       aspectRatio: preset.aspectRatio,
       overlayEnabled: Boolean(preset.overlayText),
-      overlay: { ...DEFAULT_OVERLAY, text: preset.overlayText ?? "" },
+      overlay: {
+        ...(OVERLAY_PRESETS.find((o) => o.id === preset.overlayLook)?.overlay ?? DEFAULT_OVERLAY),
+        text: preset.overlayText ?? "",
+      },
     };
   }
 

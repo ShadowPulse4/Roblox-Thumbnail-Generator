@@ -1,5 +1,5 @@
 import type { AspectRatio, OverlayPosition, VisualStyle } from "@/types/generation";
-import { getStyleDef } from "./styles";
+import { styleDirection } from "./styles";
 
 const RATIO_GUIDANCE: Record<AspectRatio, string> = {
   "16:9": "wide 16:9 landscape thumbnail; keep the main subject slightly off-center with room for a title",
@@ -33,11 +33,11 @@ export interface BuildPromptInput {
  * readability guidance after it so the requested concept stays intact.
  */
 export function buildImagePrompt(input: BuildPromptInput): string {
-  const style = getStyleDef(input.style);
+  const direction = styleDirection(input.style);
   const parts: string[] = [input.description.trim()];
 
-  if (style.direction) {
-    parts.push(`Visual style: ${style.direction}.`);
+  if (direction) {
+    parts.push(`Visual style: ${direction}.`);
   }
 
   parts.push(
@@ -47,10 +47,12 @@ export function buildImagePrompt(input: BuildPromptInput): string {
 
   if (input.overlay && input.overlay.text.trim()) {
     parts.push(
-      `Text: do not draw any text, letters, numbers, logos or watermarks. Keep the ${POSITION_WORDS[input.overlay.position]} fairly calm so a title can be placed there afterwards.`,
+      `Text: do not draw a title, caption, words or watermarks; a title is added afterwards. Signs or logos only where the description above asks for them; small comic symbols such as exclamation marks or sleepy Z's are fine. Keep the ${POSITION_WORDS[input.overlay.position]} free of important details so the title can go there.`,
     );
   } else {
-    parts.push("Text: do not add text, logos or watermarks unless the description above explicitly asks for them.");
+    parts.push(
+      "Text: no titles, captions or watermarks unless the description above explicitly asks for them; small comic symbols such as exclamation marks or sleepy Z's are fine.",
+    );
   }
 
   return parts.join("\n\n");
@@ -65,12 +67,12 @@ export function buildEditPrompt(instruction: string): string {
 }
 
 export function buildVariationPrompt(originalDescription: string, style: VisualStyle): string {
-  const def = getStyleDef(style);
+  const direction = styleDirection(style);
   return [
     "Create a fresh variation of this Roblox game thumbnail: same subject, theme and style, but with a different pose, camera angle or arrangement.",
     `Original description: ${originalDescription.trim()}`,
-    def.direction ? `Visual style: ${def.direction}.` : "",
-    "Do not add text, logos or watermarks unless the original description asks for them.",
+    direction ? `Visual style: ${direction}.` : "",
+    "Do not add titles, captions or watermarks unless the original description asks for them.",
   ]
     .filter(Boolean)
     .join("\n\n");

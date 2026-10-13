@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Factory, Ghost, Gift, Hand, Megaphone, PawPrint, Sparkles, Square, Swords, Zap } from "lucide-react";
 import { STYLE_PRESETS, getStyleDef, type StylePreset } from "@/lib/ai/styles";
@@ -20,8 +21,26 @@ const ICONS: Record<StylePreset["icon"], React.ElementType> = {
   megaphone: Megaphone,
 };
 
-/** Original placeholder artwork: a lit "stage" in the preset's colors, clearly labeled as such. */
+/**
+ * Shows one of the owner's reference thumbnails when the preset has one;
+ * otherwise an original placeholder "stage" in the preset's colors. Both are
+ * labeled, so nobody mistakes them for output of this app.
+ */
 function PresetArt({ preset }: { preset: StylePreset }) {
+  if (preset.example) {
+    return (
+      <div className="relative bg-black/30" style={{ aspectRatio: "16 / 9" }}>
+        <Image
+          src={`/examples/${preset.example}`}
+          alt={`Referentiebeeld voor ${preset.name}`}
+          fill
+          sizes="(max-width: 640px) 96vw, (max-width: 1280px) 48vw, 32vw"
+          className={preset.aspectRatio === "1:1" ? "object-contain" : "object-cover"}
+        />
+        <span className="absolute bottom-2 right-2 rounded-[6px] bg-black/60 px-1.5 py-0.5 text-[10.5px] text-white/80">Referentiebeeld</span>
+      </div>
+    );
+  }
   const Icon = ICONS[preset.icon];
   const [a, b] = preset.colors;
   return (
@@ -45,7 +64,7 @@ function PresetArt({ preset }: { preset: StylePreset }) {
       {preset.overlayText ? (
         <span
           className="absolute left-3 top-2.5 -rotate-3 font-[family-name:var(--font-display)] text-sm font-extrabold tracking-tight text-white"
-          style={{ textShadow: `0 2px 0 ${b}, 0 0 10px #000a` }}
+          style={{ textShadow: `0 2px 0 ${b}, 0 0 10px #000a`, whiteSpace: "pre-line" }}
         >
           {preset.overlayText}
         </span>
@@ -75,10 +94,11 @@ export default function StylesPage() {
         ))}
       </nav>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {STYLE_PRESETS.map((preset) => (
+        {STYLE_PRESETS.map((preset, i) => (
           <article
             key={preset.id}
-            id={encodeURIComponent(preset.category)}
+            // Anchor for the category links, on the first card of each category.
+            id={STYLE_PRESETS.findIndex((p) => p.category === preset.category) === i ? encodeURIComponent(preset.category) : undefined}
             className="flex scroll-mt-24 flex-col overflow-hidden rounded-[var(--radius-panel)] border border-line bg-panel"
           >
             <PresetArt preset={preset} />
@@ -94,7 +114,7 @@ export default function StylesPage() {
               <div className="mt-auto flex flex-wrap items-center gap-1.5">
                 <Badge>{getStyleDef(preset.style).label}</Badge>
                 <Badge>{preset.aspectRatio}</Badge>
-                {preset.overlayText ? <Badge tone="accent">Tekst: {preset.overlayText}</Badge> : null}
+                {preset.overlayText ? <Badge tone="accent">Tekst: {preset.overlayText.replace(/\n/g, " ")}</Badge> : null}
                 <Link href={`/?preset=${preset.id}`} className={buttonVariants({ variant: "primary", size: "sm", className: "ml-auto" })}>
                   Stijl gebruiken
                 </Link>

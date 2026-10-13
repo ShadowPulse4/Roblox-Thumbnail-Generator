@@ -3,7 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { ASPECT_RATIOS, VISUAL_STYLES, type AspectRatio, type VisualStyle } from "@/types/generation";
 import { AppError, toProviderError } from "./errors";
-import { getStyleDef } from "./styles";
+import { COMIC_CALLOUTS, getStyleDef, ROBLOX_HOUSE_LOOK } from "./styles";
 
 /**
  * Prompt enhancement through the official Anthropic Messages API.
@@ -30,11 +30,14 @@ export interface EnhanceResult {
 
 const SYSTEM = `You write image-generation prompts for Roblox game thumbnails.
 
+The target look is that of popular, click-worthy Roblox thumbnails: ${ROBLOX_HOUSE_LOOK}. Typical extras: ${COMIC_CALLOUTS}. Typical compositions: a thief running off with loot while someone chases them, a hero facing a huge boss, before/after transformations, a character proudly holding up a glowing item.
+
 Rewrite the user's idea into one detailed, image-model-friendly description in English (translate if the idea is in another language). Describe, in flowing prose:
 - the main subject, its pose and facial expression
 - composition, camera angle, foreground and background, depth and visual hierarchy
 - lighting, color palette, materials and textures
-- the important props and effects (particles, glow outlines, sparks)
+- the important props and effects (particles, glow outlines, sparks, comic callouts)
+- for each character: what kind of Roblox avatar it is, its clothes and its exact facial expression
 
 Rules:
 - Keep the user's concept. Do not add new characters, creatures or story elements they did not ask for. You may add environment, lighting and effect details that support the concept.
@@ -62,9 +65,10 @@ export function createPromptEnhancer(opts: { apiKey: string; model: string; time
     const userContent = [
       `Idea: ${input.prompt.trim()}`,
       `Chosen style: ${style.label}${style.direction ? ` (${style.direction})` : ""}`,
+      style.houseLook ? "Write the description in the Roblox thumbnail look described above." : "",
       `Chosen aspect ratio: ${input.aspectRatio}`,
       input.overlayText
-        ? `A title "${input.overlayText}" will be added afterwards as an overlay, so the image itself must not contain that text.`
+        ? `A title "${input.overlayText.replace(/\s*\n\s*/g, " ")}" will be added afterwards as an overlay, so the image itself must not contain that text.`
         : "",
     ]
       .filter(Boolean)

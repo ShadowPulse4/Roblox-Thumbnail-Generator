@@ -126,12 +126,16 @@ Maak regelmatig een back-up van de map uit `DATA_DIR` (standaard `data/`): daari
 - **Prompt verbeteren** met Claude. Het resultaat is gewoon tekst die je nog aanpast; met *Origineel terug* ga je terug naar je eigen versie.
 - **Zoeker**: het voorbeeldvlak heeft altijd de gekozen verhouding, en je ziet je overlay-tekst al staan voordat je genereert.
 - **Leesbaarheidscheck**: je resultaat op 168 px breed, het formaat in lijsten en zijbalken.
-- **Tekst op de thumbnail**: met de echte lettertypes (Luckiest Guy of Anton) lokaal over de afbeelding gezet, met grootte, positie, rand, kleur en kanteling. De browser-preview en het resultaat gebruiken hetzelfde lettertypebestand en zijn dus gelijk. Je tekst wordt letterlijk overgenomen.
+- **Tekst op de thumbnail**: lokaal over de afbeelding gezet met de echte lettertypes (Luckiest Guy of Anton), in drie opmaken: een **3D-titel** met goudverloop, dikke rand en gloed (zoals “EPIC BOSSES”), tekst **met rand** (zoals “YOU”) en een **label** op een donker vlak (zoals “+1,000,000 STRENGTH”). Tot drie regels, met optioneel een rode **pijl** naar je onderwerp. Grootte, positie, kleuren en kanteling zijn instelbaar. De browser-preview en het resultaat gebruiken dezelfde code en hetzelfde lettertype en zijn dus gelijk. Je tekst wordt letterlijk overgenomen.
 - **Bewerken**: beschrijf een wijziging (“maak de achtergrond paars”); het beeldmodel past de bestaande afbeelding aan. Het origineel blijft bewaard.
 - **Variaties**: nieuwe versies met hetzelfde onderwerp en dezelfde stijl.
 - **Mijn creaties en Favorieten**: zoeken, filteren op stijl, sorteren, downloaden, verwijderen (met bevestiging), prompt hergebruiken.
-- **Stijlen ontdekken**: tien startpunten (baasgevechten, pets, steal-games, simulators, tycoons, anime, Halloween, kerst, game-iconen, updates). De afbeeldingen daar zijn duidelijk gelabelde illustraties, geen AI-voorbeelden.
+- **Stijlen ontdekken**: twaalf startpunten (baasgevechten, steal-games, pets, simulators, tycoons, game-iconen, anime, Halloween, kerst, updates). Waar het past staat er een van je eigen referentiethumbnails bij (gelabeld als *Referentiebeeld*); de rest heeft een gelabelde illustratie.
 - **Gebruik en kosten**: vandaag, deze maand, per dag, en de laatste verzoeken.
+
+### Stijlen, afgestemd op je referenties
+
+De stijlbeschrijvingen in `lib/ai/styles.ts` zijn afgeleid van je referentiethumbnails (staan in `public/examples/`). Wat die gemeen hebben, gaat als vaste “huisstijl” mee bij de Roblox-stijlen: glanzende 3D Roblox-avatars, overdreven cartoongezichten, een witte sticker-rand om de hoofdpersonen, felle kleuren met sterk randlicht, en stripeffecten zoals schrikstreepjes, zweetdruppels, glinsteringen en snelheidslijnen. *Felle simulator* en *Tycoon* gebruiken juist de strakkere, vlakke cartoonlook van je simulator- en tycoon-voorbeelden. De nieuwe stijl *Stelen en wegrennen* is gemaakt voor steal-games. Bevalt een stijl niet na je eerste echte generaties, pas dan de tekst in `styles.ts` aan.
 
 ### Kwaliteitsstanden
 

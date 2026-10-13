@@ -1,12 +1,15 @@
 import { z } from "zod";
 import {
   ASPECT_RATIOS,
+  OVERLAY_ARROWS,
+  OVERLAY_STYLES,
   IMAGE_COUNTS,
   OVERLAY_FONTS,
   OVERLAY_POSITIONS,
   QUALITY_LEVELS,
   VISUAL_STYLES,
 } from "@/types/generation";
+import { MAX_OVERLAY_LINES } from "@/lib/overlay/layout";
 
 /** Shared between the browser (instant feedback) and the server (the real check). */
 
@@ -21,7 +24,11 @@ export const overlaySchema = z.object({
     .string()
     .trim()
     .min(1, "Vul de tekst voor de overlay in.")
-    .max(MAX_OVERLAY_TEXT, `De overlaytekst mag maximaal ${MAX_OVERLAY_TEXT} tekens zijn.`),
+    .max(MAX_OVERLAY_TEXT, `De overlaytekst mag maximaal ${MAX_OVERLAY_TEXT} tekens zijn.`)
+    .refine((t) => t.split(/\r?\n/).filter((l) => l.trim()).length <= MAX_OVERLAY_LINES, {
+      message: `Maximaal ${MAX_OVERLAY_LINES} regels tekst.`,
+    }),
+  style: z.enum(OVERLAY_STYLES).default("outline"),
   font: z.enum(OVERLAY_FONTS),
   sizePercent: z.number().min(4).max(30),
   position: z.enum(OVERLAY_POSITIONS),
@@ -29,6 +36,8 @@ export const overlaySchema = z.object({
   outlineColor: hexColor,
   outlinePercent: z.number().min(0).max(25),
   rotation: z.number().min(-15).max(15),
+  fillColor2: hexColor.optional(),
+  arrow: z.enum(OVERLAY_ARROWS).default("none"),
 });
 
 export function promptSchema(maxLength: number) {

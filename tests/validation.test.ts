@@ -46,6 +46,14 @@ describe("prompt validation", () => {
     expect(overlaySchema.safeParse({ ...ok, fillColor: "red" }).success).toBe(false);
     expect(overlaySchema.safeParse({ ...ok, sizePercent: 90 }).success).toBe(false);
     expect(overlaySchema.safeParse({ ...ok, text: "x".repeat(41) }).success).toBe(false);
+    // Up to three lines; older overlays without a style or arrow get defaults.
+    expect(overlaySchema.safeParse({ ...ok, text: "EPIC\nBOSSES" }).success).toBe(true);
+    expect(overlaySchema.safeParse({ ...ok, text: "A\nB\nC\nD" }).success).toBe(false);
+    const parsed = overlaySchema.parse(ok);
+    expect(parsed.style).toBe("outline");
+    expect(parsed.arrow).toBe("none");
+    expect(overlaySchema.safeParse({ ...ok, style: "neon" }).success).toBe(false);
+    expect(overlaySchema.safeParse({ ...ok, fillColor2: "orange" }).success).toBe(false);
   });
 
   it("requires a uuid image id for edits", () => {
@@ -68,10 +76,23 @@ describe("prompt builder", () => {
       aspectRatio: "1:1",
       overlay: { text: "SPECIAL PET", position: "bottom-left" },
     });
-    expect(out).toContain("do not draw any text");
+    expect(out).toContain("do not draw a title");
     expect(out).toContain("bottom-left corner");
     // The overlay wording itself is not sent to the image model.
     expect(out).not.toContain("SPECIAL PET");
+  });
+
+  it("adds the Roblox house look from the references to Roblox styles", () => {
+    const out = buildImagePrompt({ description: "thief with nuggets", style: "steal-chase", aspectRatio: "16:9" });
+    expect(out).toContain("white sticker-like rim outline");
+    expect(out).toContain("shock lines");
+    expect(out).toContain("chasing");
+  });
+
+  it("keeps the clean cartoon simulator look without the glossy house look", () => {
+    const out = buildImagePrompt({ description: "strong noob", style: "bright-simulator", aspectRatio: "16:9" });
+    expect(out).toContain("clean stylized cartoon");
+    expect(out).not.toContain("sticker-like rim outline");
   });
 
   it("adds no style direction for the custom style", () => {
